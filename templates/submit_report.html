@@ -9,6 +9,31 @@
     <label>Descripción
       <textarea name="description" rows="6" required></textarea>
     </label>
+    {% if current_user.is_admin %}
+      <label>Categoría
+        <input type="text" name="category" placeholder="Ej. Finanzas, Soporte">
+      </label>
+      <label>Estado
+        <select name="status">
+          {% for status in status_choices %}
+            <option value="{{ status }}">{{ status }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Prioridad
+        <select name="priority">
+          {% for priority in priority_choices %}
+            <option value="{{ priority }}" {% if priority == 'Media' %}selected{% endif %}>{{ priority }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Asignado a
+        <input type="text" name="assigned_to" placeholder="Nombre del responsable">
+      </label>
+      <label>Notas internas
+        <textarea name="notes" rows="4" placeholder="Información adicional para el equipo"></textarea>
+      </label>
+    {% endif %}
     <label>Archivo adjunto (opcional)
       <input type="file" name="file" >
       <small>Permitidos: {{ allowed_exts }}. Máx {{ max_mb }}MB.</small>

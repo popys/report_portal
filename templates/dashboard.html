@@ -9,7 +9,8 @@
       {% for r in reports %}
         <a class="list-item" href="{{ url_for('view_report', report_id=r.id) }}">
           <div class="list-title">{{ r.title }}</div>
-          <div class="list-meta">Por {{ r.user.full_name }} • {{ r.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          <div class="list-meta">Por {{ r.user.full_name }} • {{ r.created_at.strftime('%Y-%m-%d %H:%M') }}{% if r.category %} • Categoría: {{ r.category }}{% endif %}</div>
+          <div class="list-meta">Estado: <strong>{{ r.status }}</strong> • Prioridad: <strong>{{ r.priority }}</strong>{% if r.assigned_to %} • Asignado a: {{ r.assigned_to }}{% endif %}</div>
         </a>
       {% endfor %}
     </div>
