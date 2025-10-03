@@ -1,0 +1,8 @@
+﻿venv/
+__pycache__/
+*.pyc
+report_portal.db
+.env
+uploads/*
+!uploads/.gitkeep
+.DS_Store
