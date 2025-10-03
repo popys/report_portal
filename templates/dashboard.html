@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Panel{% endblock %}
+{% block content %}
+  <h1>{% if current_user.is_admin %}Todos los reportes{% else %}Mis reportes{% endif %}</h1>
+  {% if reports|length == 0 %}
+    <p>No hay reportes todavía.</p>
+  {% else %}
+    <div class="list">
+      {% for r in reports %}
+        <a class="list-item" href="{{ url_for('view_report', report_id=r.id) }}">
+          <div class="list-title">{{ r.title }}</div>
+          <div class="list-meta">Por {{ r.user.full_name }} • {{ r.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}

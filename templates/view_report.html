@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Reporte #{{ report.id }}{% endblock %}
+{% block content %}
+  <h1>{{ report.title }}</h1>
+  <p class="muted">Creado: {{ report.created_at.strftime('%Y-%m-%d %H:%M') }} por {{ report.user.full_name }}</p>
+  <article class="card">
+    <p>{{ report.description|e }}</p>
+    {% if report.filename %}
+      <p><a class="btn" href="{{ url_for('download_file', filename=report.filename) }}">Descargar adjunto ({{ report.original_filename }})</a></p>
+    {% else %}
+      <p class="muted">Sin adjunto.</p>
+    {% endif %}
+  </article>
+{% endblock %}

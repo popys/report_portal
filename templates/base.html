@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Report Portal{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-left"><a href="{{ url_for('index') }}">Report Portal</a></div>
+    <div class="nav-right">
+      {% if current_user.is_authenticated %}
+        <span>Hola, {{ current_user.full_name }}</span>
+        <a href="{{ url_for('submit_report') }}" class="btn">Nuevo reporte</a>
+        {% if current_user.is_admin %}
+          <a href="{{ url_for('new_user') }}" class="btn">Crear usuario</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}" class="btn btn-outline">Salir</a>
+      {% endif %}
+    </div>
+  </nav>
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack">
+          {% for cat, msg in messages %}
+            <div class="flash {{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

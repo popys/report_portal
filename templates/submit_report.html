@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Enviar reporte{% endblock %}
+{% block content %}
+  <h1>Enviar reporte</h1>
+  <form class="card" method="post" enctype="multipart/form-data">
+    <label>Título
+      <input type="text" name="title" required>
+    </label>
+    <label>Descripción
+      <textarea name="description" rows="6" required></textarea>
+    </label>
+    <label>Archivo adjunto (opcional)
+      <input type="file" name="file" >
+      <small>Permitidos: {{ allowed_exts }}. Máx {{ max_mb }}MB.</small>
+    </label>
+    <button type="submit" class="btn">Enviar</button>
+  </form>
+{% endblock %}
