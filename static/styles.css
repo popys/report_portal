@@ -12,10 +12,11 @@ h1 { font-size: 28px; margin: 8px 0 16px; }
 
 .card { background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
 label { display:block; margin-bottom:12px; font-weight:600; }
-input[type="text"], input[type="password"], textarea, input[type="file"] {
+input[type="text"], input[type="password"], textarea, input[type="file"], select {
   width:100%; background:#0b1226; color:var(--text); border:1px solid rgba(255,255,255,.15);
   border-radius:12px; padding:10px 12px; outline:none;
 }
+select { appearance:none; }
 .checkbox { display:flex; align-items:center; gap:8px; font-weight:600; }
 .muted { color: var(--muted); }
 
@@ -36,3 +37,7 @@ input[type="text"], input[type="password"], textarea, input[type="file"] {
 .list-item:hover { background: rgba(255,255,255,.04); }
 .list-title { font-weight:700; }
 .list-meta { color:var(--muted); font-size: 12px; margin-top:4px; }
+
+.report-details { display:grid; grid-template-columns: minmax(120px, 160px) 1fr; gap:8px 16px; margin:16px 0 0; }
+.report-details dt { font-weight:700; color:var(--muted); }
+.report-details dd { margin:0; }
