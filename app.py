@@ -21,6 +21,11 @@ ALLOWED_EXTS = set(os.getenv("ALLOWED_EXTS", ",".join(DEFAULT_ALLOWED_EXTS)).spl
 MAX_MB = int(os.getenv("UPLOAD_MAX_MB", "25"))
 MAX_CONTENT_LENGTH = MAX_MB * 1024 * 1024
 
+STATUS_OPTIONS = ["Nuevo", "En revisión", "Completado", "Cerrado"]
+PRIORITY_OPTIONS = ["Baja", "Media", "Alta"]
+DEFAULT_STATUS = STATUS_OPTIONS[0]
+DEFAULT_PRIORITY = PRIORITY_OPTIONS[1]
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", os.urandom(24).hex())
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{BASE_DIR / 'report_portal.db'}"
@@ -52,6 +57,11 @@ class Report(db.Model):
     description = db.Column(db.Text, nullable=False)
     filename = db.Column(db.String(255), nullable=True)  # stored name on disk
     original_filename = db.Column(db.String(255), nullable=True)  # original name
+    category = db.Column(db.String(120), nullable=True)
+    status = db.Column(db.String(50), nullable=False, default=DEFAULT_STATUS)
+    priority = db.Column(db.String(20), nullable=False, default=DEFAULT_PRIORITY)
+    assigned_to = db.Column(db.String(120), nullable=True)
+    notes = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user = db.relationship("User", backref=db.backref("reports", lazy=True))
@@ -115,6 +125,8 @@ def submit_report():
         title = request.form.get("title","").strip()
         description = request.form.get("description","").strip()
         file = request.files.get("file")
+        category = request.form.get("category", "").strip()
+        notes = request.form.get("notes", "").strip()
         if not title or not description:
             flash("Título y descripción son obligatorios.", "warning")
             return redirect(request.url)
@@ -131,18 +143,39 @@ def submit_report():
             file.save(UPLOAD_FOLDER / stored)
             saved_name = stored
 
+        status_raw = request.form.get("status", "").strip()
+        priority_raw = request.form.get("priority", "").strip()
+        assigned_raw = request.form.get("assigned_to", "").strip()
+
+        status_value = status_raw if status_raw in STATUS_OPTIONS else DEFAULT_STATUS
+        priority_value = priority_raw if priority_raw in PRIORITY_OPTIONS else DEFAULT_PRIORITY
+        assigned_to = assigned_raw or None
+
         rep = Report(
             title=title,
             description=description,
             filename=saved_name,
             original_filename=original_name,
+            category=(category or None),
+            status=status_value,
+            priority=priority_value,
+            assigned_to=assigned_to,
+            notes=(notes or None),
             user_id=current_user.id
         )
         db.session.add(rep)
         db.session.commit()
         flash("Reporte enviado.", "success")
         return redirect(url_for("index"))
-    return render_template("submit_report.html", allowed_exts=", ".join(sorted(ALLOWED_EXTS)), max_mb=MAX_MB)
+    return render_template(
+        "submit_report.html",
+        allowed_exts=", ".join(sorted(ALLOWED_EXTS)),
+        max_mb=MAX_MB,
+        status_choices=STATUS_OPTIONS,
+        priority_choices=PRIORITY_OPTIONS,
+        default_status=DEFAULT_STATUS,
+        default_priority=DEFAULT_PRIORITY,
+    )
 
 @app.route("/reports/<int:report_id>")
 @login_required
